@@ -5,6 +5,7 @@
 
 
 bool FunctionNamePrinter::runOnFunction(Function &F) {
+    errs() << "Function Name: " << F.getName() << "\n";
     return false;
 }
 
