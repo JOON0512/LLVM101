@@ -4,17 +4,18 @@
 #define MALLOC_SIZE 10
 
 int main () {
-    int *mat = (int *) malloc(MALLOC_SIZE);
+    int *mat = malloc(MALLOC_SIZE * sizeof(*mat));
+    if (!mat) return 1;
     
     for (int i = 0; i < MALLOC_SIZE; i++) {
         mat[i] = rand();
     }
 
     for (int i = 0; i < MALLOC_SIZE; i++) {
-        printf("%p\n", &mat[i]);
+        printf("%d\n", mat[i]);
     }
 
+    free(mat);
     return 0;
 }
-
 

@@ -36,4 +36,4 @@ void LoopInfoPrinter::getAnalysisUsage(AnalysisUsage& AU) const
 }
 
 char LoopInfoPrinter::ID = 0;
-static RegisterPassqLoopInfoPrinter > Y("loop-info-printer", "LoopInfoPrinter Pass ");
+static RegisterPass<LoopInfoPrinter> Y("loop-info-printer", "LoopInfoPrinter Pass ");

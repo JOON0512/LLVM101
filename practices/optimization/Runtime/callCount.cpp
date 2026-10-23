@@ -1,33 +1,34 @@
 #include <stdio.h>
 #include <map>
+#include <atomic>
+#include <mutex>
+#include <cstdint>
 
-static int count = 0;
-static std::map<int, int> CountMap;
+static std::atomic<uint64_t> count{0};
+static std::map<int, uint64_t> CountMap;
+static std::mutex CountMutex;
 
 extern "C"
 void countCall() {
-  count++;
+  count.fetch_add(1, std::memory_order_relaxed);
 }
 
 extern "C"
 void printResult() {
-  printf("Dynamic call count: %d\n", count);
+  printf("Dynamic call count: %llu\n", (unsigned long long)count.load());
 }
 
 extern "C"
 void countCallPerInst(int id) {
-  if(CountMap.count(id) == 0) {
-    CountMap[id] = 0;
-  } else {
-    CountMap[id]++;
-  }
+  std::lock_guard<std::mutex> Guard(CountMutex);
+  ++CountMap[id];
 }
 
 extern "C"
 void printResultPerInst() {
+  std::lock_guard<std::mutex> Guard(CountMutex);
   printf("Dynamic call count: \n");
   for(auto &entry : CountMap) {
-    printf("Inst ID: %d / Call count: %d\n", entry.first, entry.second);
+    printf("Inst ID: %d / Call count: %llu\n", entry.first, (unsigned long long)entry.second);
   }
 }
-
